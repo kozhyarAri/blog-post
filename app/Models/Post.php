@@ -12,6 +12,10 @@ class Post extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    public function getImageAttribute($value)
+    {
+        return $value ? asset('storage/' . $value) : null;
+    }
 
     public function author()
     {

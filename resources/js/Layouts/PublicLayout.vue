@@ -144,7 +144,7 @@ const showingNavigationDropdown = ref(false);
         </header>
 
         <!-- Page Content -->
-        <main class="min-h-[80vh]">
+        <main class="min-h-[80vh] text-zinc-800">
             <slot />
         </main>
         <div class="flex justify-between items-center border-t-2 py-2">

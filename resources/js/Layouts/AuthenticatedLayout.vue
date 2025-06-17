@@ -33,6 +33,9 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('posts.index')" :active="$page.url.startsWith('/posts')">
                                     Posts
                                 </NavLink>
+                                <NavLink :href="route('public.index')" :active="route().current('home')">
+                                    Home
+                                </NavLink>
                             </div>
                         </div>
 

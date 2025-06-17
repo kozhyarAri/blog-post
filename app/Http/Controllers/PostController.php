@@ -6,6 +6,7 @@ use App\Models\Author;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -44,10 +45,14 @@ class PostController extends Controller
             'author_id' => 'required|exists:authors,id',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|in:published,unpublished',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($validated['status'] === 'published') {
             $validated['published_at'] = now();
+        }
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('posts', 'public');
         }
 
         Post::create($validated);
@@ -73,12 +78,20 @@ class PostController extends Controller
             'author_id' => 'required|exists:authors,id',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|in:published,unpublished',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        if ($validated['status'] === 'published') {
+        if ($validated['status'] === 'published' && !$post->published_at) {
             $validated['published_at'] = now();
-        } else {
+        } elseif ($validated['status'] === 'unpublished') {
             $validated['published_at'] = null;
+        }
+
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+            $validated['image'] = $request->file('image')->store('posts', 'public');
         }
 
         $post->update($validated);
